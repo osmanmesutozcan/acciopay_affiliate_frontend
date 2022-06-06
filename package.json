@@ -1,0 +1,50 @@
+{
+  "name": "accio-pay-frontend",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint"
+  },
+  "dependencies": {
+    "@emotion/react": "^11.8.2",
+    "@emotion/styled": "^11.8.1",
+    "@mui/material": "^5.5.3",
+    "@tailwindcss/typography": "^0.5.2",
+    "axios": "^0.26.1",
+    "cookie-cutter": "^0.2.0",
+    "daisyui": "^2.11.0",
+    "date-fns": "^2.28.0",
+    "filepond": "4.30.3",
+    "formik": "^2.2.9",
+    "lodash": "^4.17.21",
+    "next": "12.1.0",
+    "query-string": "^7.1.1",
+    "rc-slider": "^10.0.0-alpha.6",
+    "react": "17.0.2",
+    "react-dom": "17.0.2",
+    "react-filepond": "7.1.1",
+    "react-use": "^17.3.2",
+    "react-verification-input": "^2.0.4",
+    "swr": "^1.2.2",
+    "tailwind-merge": "^1.2.0",
+    "yup": "^0.32.11"
+  },
+  "devDependencies": {
+    "@tailwindcss/forms": "^0.5.0",
+    "@types/date-fns": "^2.6.0",
+    "@types/lodash": "^4.14.180",
+    "@types/node": "^17.0.21",
+    "@types/query-string": "^6.3.0",
+    "@types/react": "^17.0.40",
+    "autoprefixer": "^10.4.4",
+    "eslint": "8.11.0",
+    "eslint-config-next": "12.1.0",
+    "postcss": "^8.4.12",
+    "prettier": "^2.6.0",
+    "tailwindcss": "^3.0.23",
+    "typescript": "^4.6.2"
+  }
+}
