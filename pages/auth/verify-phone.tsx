@@ -50,6 +50,16 @@ export default function VerifyPhone() {
         data = (await mutate())?.data;
       }
 
+      if (data?.ambassador_verification === "approved") {
+        return router.replace("/");
+      } else {
+        setVerificationError(true);
+        return;
+      }
+
+      // Unreachable until we decide if we want verification here.
+
+
       const alreadyCompleted = data?.verification_steps_completed ?? [];
 
       if (redirect) {

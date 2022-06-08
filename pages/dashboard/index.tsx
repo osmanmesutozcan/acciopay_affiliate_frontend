@@ -17,17 +17,30 @@ import { fetcher } from "../../utils/fetcher";
 import { useRouter } from "next/router";
 import { Loading } from "../../components/common/layoutComponents/Loading";
 
-function createData(name: string, calories: number, fat: string, carbs: number, protein: number) {
-  return { name, calories, fat, carbs, protein };
+interface ISummaryData {
+  total_commissions: number;
+  total_commissions_formated: string;
+  total_commissions_pending: number;
+  total_commissions_pending_formated: string;
+  total_referred_users: number;
 }
 
-const rows = [
-  createData("some@one.com", 159, "6 / 10", 24, 4.0),
-  createData("any@one.com", 237, "3 / 4", 37, 4.3),
-  createData("no@one.com", 262, "1 / 2", 24, 6.0),
-];
+interface IUnpaidUserData {
+  full_name: string;
+  legal_full_name: string;
 
-const fake = { name: "John", legal_full_name: "John Wasovski", totalReferred: 20, totalTransactions: 100 };
+  customer_id: number;
+  email: string;
+  order_id: number;
+
+  paid_transactions: number;
+  total_transactions: number;
+
+  // YES. these are strings because it is returned that way
+  //  from DB...
+  paid_transaction_amount: string;
+  total_transaction_amount: string;
+}
 
 export default function Dashboard() {
   const router = useRouter();
@@ -40,6 +53,18 @@ export default function Dashboard() {
     isValidating: isValidatingUserData,
     mutate: mutateUserData,
   } = useSWR<{ data: ICustomerData }, IErrorProps>("/api/customer/current", fetcher);
+
+  const {
+    data: summaryData,
+    error: summaryError,
+    isValidating: isValidatingSummaryData,
+  } = useSWR<{ data: ISummaryData }, IErrorProps>("/api/ambassador/summary", fetcher);
+
+  const {
+    data: unpaidUsersData,
+    error: unpaidUsersError,
+    isValidating: isValidatingUnpaidUsersData,
+  } = useSWR<{ data: IUnpaidUserData[] }, IErrorProps>("/api/ambassador/unpaid-users", fetcher);
 
   useEffect(() => {
     if (copiedReferralCode) {
@@ -98,6 +123,7 @@ export default function Dashboard() {
             {userData.data?.name.trim() || userData.data?.legal_full_name}
           </h2>
         </div>
+
         <div>
           <p>Referral code:</p>
           <div>
@@ -137,10 +163,13 @@ export default function Dashboard() {
           style={{ backgroundImage: `url("/wave.png")` }}
         />
         <p className="block font-semibold">Total referred users: </p>
-        <h3 className="block text-lg font-bold leading-tight">{fake.totalReferred}</h3>
-        <p className="block font-semibold mt-4">Total transactions subject to comission:</p>
-        <h3 className="block text-lg font-bold leading-tight">{fake.totalTransactions}</h3>
+        <h3 className="block text-lg font-bold leading-tight">{summaryData?.data.total_referred_users ?? "--"}</h3>
+        <p className="block font-semibold mt-4">Total transactions subject to commission:</p>
+        <h3 className="block text-lg font-bold leading-tight">
+          {summaryData?.data.total_commissions_pending_formated ?? "--"}
+        </h3>
       </div>
+
       <div className="grid grid-cols-3 divide-x divide-gray-200 mb-4 bg-white py-6">
         <Link href="/dashboard/payment-tracing">
           <a className="flex flex-col items-center cursor-pointer no-underline">
@@ -161,38 +190,52 @@ export default function Dashboard() {
         <TableHead>
           <TableRow>
             <StyledTableCell>User</StyledTableCell>
+            <StyledTableCell>Email</StyledTableCell>
             <StyledTableCell align="center">Unpaid amount</StyledTableCell>
-            <StyledTableCell align="center">Transactions left</StyledTableCell>
+            <StyledTableCell align="center">Transactions paid/total</StyledTableCell>
             {/*<TableCell align="right">Carbs&nbsp;(g)</TableCell>*/}
             {/*<TableCell align="right">Protein&nbsp;(g)</TableCell>*/}
           </TableRow>
         </TableHead>
+
         <TableBody>
-          {rows.map((row) => (
+          {unpaidUsersData?.data.map((row) => (
             <TableRow
-              key={row.name}
+              key={`unpaid_user_${row.customer_id}`}
               sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
               className="odd:bg-gray-light"
             >
               <StyledTableCell component="th" scope="row">
-                {row.name}
+                {row.full_name || row.legal_full_name}
               </StyledTableCell>
-              <StyledTableCell align="center">{row.calories}</StyledTableCell>
-              <StyledTableCell align="center">{row.fat}</StyledTableCell>
+
+              <StyledTableCell component="th" scope="row">
+                {row.email}
+              </StyledTableCell>
+
+              <StyledTableCell align="center">
+                {parseFloat(row.total_transaction_amount || "0") - parseFloat(row.paid_transaction_amount || "0")}
+              </StyledTableCell>
+
+              <StyledTableCell align="center">
+                {row.paid_transactions}/{row.total_transactions}
+              </StyledTableCell>
             </TableRow>
           ))}
+
           {emptyRows > 0 && (
             <TableRow style={{ height: 53 * emptyRows }}>
               <StyledTableCell colSpan={3} />
             </TableRow>
           )}
         </TableBody>
+
         <TableFooter>
           <TableRow>
             <TablePagination
               rowsPerPageOptions={[5, 10, 25, { label: "All", value: -1 }]}
               // colSpan={}
-              count={rows.length}
+              count={unpaidUsersData.data.length}
               rowsPerPage={10}
               page={page}
               SelectProps={{
