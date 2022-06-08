@@ -177,6 +177,7 @@ export default function Dashboard() {
             <p className="text-xs text-gray-500 pt-1">Payment tracing</p>
           </a>
         </Link>
+
         <Link href="/">
           <a className="flex flex-col items-center cursor-pointer no-underline">
             <TransactionIconColored className="h-6 w-6" />
