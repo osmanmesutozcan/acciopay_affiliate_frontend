@@ -101,7 +101,7 @@ export default function Dashboard() {
   const timeOfDay = new Date().getHours();
   const greeting = timeOfDay < 12 ? "morning" : timeOfDay > 18 ? "evening" : "afternoon";
 
-  const emptyRows = page > 0 ? Math.max(0, (1 + page) * rowsPerPage - rows.length) : 0;
+  const emptyRows = page > 0 ? Math.max(0, (1 + page) * rowsPerPage - unpaidUsersData?.data.length) : 0;
 
   const handleChangePage = (event: React.MouseEvent<HTMLButtonElement> | null, newPage: number) => {
     setPage(newPage);
@@ -206,7 +206,11 @@ export default function Dashboard() {
               className="odd:bg-gray-light"
             >
               <StyledTableCell component="th" scope="row">
-                {row.full_name || row.legal_full_name}
+                <Link href={`/dashboard/user/${row.customer_id}`} passHref>
+                  <a className='underline'>
+                    {row.full_name || row.legal_full_name}
+                  </a>
+                </Link>
               </StyledTableCell>
 
               <StyledTableCell component="th" scope="row">
@@ -234,8 +238,7 @@ export default function Dashboard() {
           <TableRow>
             <TablePagination
               rowsPerPageOptions={[5, 10, 25, { label: "All", value: -1 }]}
-              // colSpan={}
-              count={unpaidUsersData.data.length}
+              count={unpaidUsersData?.data.length}
               rowsPerPage={10}
               page={page}
               SelectProps={{
