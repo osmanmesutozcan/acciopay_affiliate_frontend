@@ -51,7 +51,7 @@ export default function VerifyPhone() {
       }
 
       if (data?.ambassador_verification === "approved") {
-        return router.replace("/");
+        return router.replace("/dashboard");
       } else {
         setVerificationError(true);
         return;
