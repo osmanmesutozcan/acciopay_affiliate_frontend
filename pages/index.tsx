@@ -2,7 +2,9 @@ import { Layout } from "../components/common/layoutComponents/Layout";
 import { PrimaryButton } from "../components/common/Button";
 import { affiliateProgram } from "../utils/config";
 import { useRouter } from "next/router";
+
 import useSWR from "swr";
+
 import { ICustomerData } from "../utils/schema";
 import { IErrorProps } from "../components/common/layoutComponents/Error";
 import { fetcher } from "../utils/fetcher";

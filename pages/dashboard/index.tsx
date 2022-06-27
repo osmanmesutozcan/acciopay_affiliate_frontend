@@ -13,9 +13,13 @@ import { TablePaginationActions } from "../../components/TablePaginationArrowCom
 import useSWR from "swr";
 import { ICustomerData } from "../../utils/schema";
 import { IErrorProps, NotAmbassadorError } from "../../components/common/layoutComponents/Error";
-import { fetcher } from "../../utils/fetcher";
+import {fetcher, poster} from "../../utils/fetcher";
 import { useRouter } from "next/router";
 import { Loading } from "../../components/common/layoutComponents/Loading";
+
+import {toast} from "react-toastify";
+import 'react-toastify/dist/ReactToastify.css';
+
 
 interface ISummaryData {
   total_commissions: number;
@@ -47,6 +51,8 @@ export default function Dashboard() {
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(5);
   const [copiedReferralCode, setCopiedReferralCode] = useState(false);
+  const [requesting, setRequesting] = useState(false);
+
   const {
     data: userData,
     error: userError,
@@ -58,6 +64,7 @@ export default function Dashboard() {
     data: summaryData,
     error: summaryError,
     isValidating: isValidatingSummaryData,
+    mutate: mutateSummaryData,
   } = useSWR<{ data: ISummaryData }, IErrorProps>("/api/ambassador/summary", fetcher);
 
   const {
@@ -96,6 +103,30 @@ export default function Dashboard() {
       setCopiedReferralCode(true);
       console.log(document.getElementById("referralCode").innerText);
     });
+  }
+
+  async function handleRequestPayout() {
+    setRequesting(true);
+
+    try {
+      const res = await poster('/api/ambassador/request-payout', {});
+      await mutateSummaryData();
+
+      if (!res.success) {
+        toast(res.message || 'Something went wrong', {
+          type: 'error',
+        });
+      } else {
+        toast('Payout requested', {
+          type: 'success',
+        });
+      }
+    }
+    catch (e) {
+      console.log(e)
+    }
+
+    setRequesting(false);
   }
 
   const timeOfDay = new Date().getHours();
@@ -157,17 +188,20 @@ export default function Dashboard() {
         </div>
       </div>
 
-      <div className="relative p-4 mb-0 rounded-t-lg bg-gradient-to-r from-[#8C75FF] to-[#B9C4FF] text-white ">
-        <div
-          className="absolute inset-0 h-full w-full bg-cover bg-no-repeat bg-center"
-          style={{ backgroundImage: `url("/wave.png")` }}
-        />
-        <p className="block font-semibold">Total referred users: </p>
-        <h3 className="block text-lg font-bold leading-tight">{summaryData?.data.total_referred_users ?? "--"}</h3>
-        <p className="block font-semibold mt-4">Total transactions subject to commission:</p>
-        <h3 className="block text-lg font-bold leading-tight">
-          {summaryData?.data.total_commissions_pending_formated ?? "--"}
-        </h3>
+      <div className="relative mb-0 rounded-t-lg bg-gradient-to-r from-[#8C75FF] to-[#B9C4FF] text-white ">
+        <div className="z-10 p-4 h-full w-full bg-cover bg-no-repeat bg-center" style={{ backgroundImage: `url("/wave.png")` }}>
+          <p className="block font-semibold">Total referred users: </p>
+          <h3 className="block text-lg font-bold leading-tight">{summaryData?.data.total_referred_users ?? "--"}</h3>
+
+          <p className="block font-semibold mt-4">Total transactions subject to commission:</p>
+          <h3 className="block text-lg font-bold leading-tight">
+            {summaryData?.data.total_commissions_pending_formated ?? "--"}
+          </h3>
+
+          <button className={`mt-4 z-40 ${summaryData?.data.total_commissions_pending === 0 ? 'hidden' : ''}`} onClick={handleRequestPayout} disabled={requesting || summaryData?.data.total_commissions_pending === 0}>
+            Request Payout
+          </button>
+        </div>
       </div>
 
       <div className="grid grid-cols-3 divide-x divide-gray-200 mb-4 bg-white py-6">
@@ -208,9 +242,7 @@ export default function Dashboard() {
             >
               <StyledTableCell component="th" scope="row">
                 <Link href={`/dashboard/user/${row.customer_id}`} passHref>
-                  <a className='underline'>
-                    {row.full_name || row.legal_full_name}
-                  </a>
+                  <a className="underline">{row.full_name || row.legal_full_name}</a>
                 </Link>
               </StyledTableCell>
 

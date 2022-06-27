@@ -43,13 +43,11 @@ export default function PaymentTracing() {
   const { data: detailData, error: detailError } = useSWR<{ data: IDetailData }, IErrorProps>(
     paymentId ? `/api/ambassador/payments/${paymentId}` : null,
     fetcher,
-    { revalidateOnFocus: false }
   );
 
   const { data: paymentsData, error: paymentError } = useSWR<{ data: IPaymentsData[] }, IErrorProps>(
     "/api/ambassador/payments",
     fetcher,
-    { revalidateOnFocus: false }
   );
 
   const emptyRows = page > 0 ? Math.max(0, (1 + page) * rowsPerPage - paymentsData?.data.length) : 0;
@@ -125,7 +123,9 @@ export default function PaymentTracing() {
         </>
       )}
 
-      <h3 className="font-bold">All Payouts</h3>
+      <div className='flex items-center justify-between mb-2'>
+        <h3 className="font-bold">All Payouts</h3>
+      </div>
       <Table aria-label="simple table">
         <TableHead>
           <TableRow>
