@@ -320,7 +320,7 @@ export default function AffiliateSignup() {
         setOpen={setShowSuccessAlert}
         text={"Form submitted successfully!"}
         button={
-          <PrimaryButton onClick={() => setShowSuccessAlert(false)} className="w-full">
+          <PrimaryButton onClick={() => setShowSuccessAlert(false)} className="w-full mt-4">
             OK
           </PrimaryButton>
         }
