@@ -287,8 +287,7 @@ export const affiliateProgram = {
     },
     {
       title: "Work at flexible timings",
-      description:
-        "Earn a minimum of $35 for each successful referral. No cap on your referral quote- the sky’s your limit!",
+      description: "Choose when to start and end your workday",
       icon: "/affiliate/perk-flexible.png",
     },
     {
@@ -301,7 +300,7 @@ export const affiliateProgram = {
     title: "Some things you’ll do",
     list: [
       "Encourage app downloads and successful in-app transaction through word-of-mouth and your social media platforms",
-      "Be our on-campus contact point (for students) and assist new signups to make their first purchaseMake Acciopay a safe and vibrant shopping virtual space through assisting in KYC checks and in providing reminders for repayments as our on-campus contact point\n",
+      "Be our on-campus contact point (for students) and assist new signups to make their first purchase",
       "Provide feedback on user sentiments and market trends",
     ],
   },
