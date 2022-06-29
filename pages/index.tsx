@@ -1,6 +1,6 @@
 import { Layout } from "../components/common/layoutComponents/Layout";
 import { PrimaryButton } from "../components/common/Button";
-import { affiliateProgram } from "../utils/config";
+import { accioPayEmail, affiliateProgram } from "../utils/config";
 import { useRouter } from "next/router";
 
 export default function AffiliateProgram() {
@@ -46,10 +46,14 @@ export default function AffiliateProgram() {
           <TermItem item={perk} key={perk.title} />
         ))}
       </div>
-      <div className="bg-gray-light p-5 flex flex-col items-center text-center space-y-6">
-        <h3 className="font-bold">{affiliateProgram.qrCode.title}</h3>
-        <img src={affiliateProgram.qrCode.image} alt={affiliateProgram.qrCode.title} className="h-22 w-22" />
-        {affiliateProgram.qrCode.description}
+      <div className="bg-gray-light p-5 flex flex-col items-center text-center space-y-6 text-xs">
+        {/*<h3 className="font-bold">{affiliateProgram.qrCode.title}</h3>*/}
+        {/*<img src={affiliateProgram.qrCode.image} alt={affiliateProgram.qrCode.title} className="h-22 w-22" />*/}
+        If you have any questions, please write to{" "}
+        <a href={`mailto:${accioPayEmail.hello}`} className="font-bold text-primary">
+          {accioPayEmail.hello}
+        </a>{" "}
+        and we will get back to you as soon as possible
       </div>
       <div className="p-5 flex flex-col items-center text-center space-y-6">
         <h3>Your Fellow Student Affiliates</h3>
