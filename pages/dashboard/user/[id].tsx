@@ -15,6 +15,7 @@ import { Loading } from "../../../components/common/layoutComponents/Loading";
 import { IErrorProps, NotAmbassadorError } from "../../../components/common/layoutComponents/Error";
 import { ICustomerData } from "../../../utils/schema";
 import { fetcher } from "../../../utils/fetcher";
+import Skeleton from "@mui/material/Skeleton";
 
 interface IUnpaidTransactionsData {
   order_id: number;
@@ -69,18 +70,6 @@ export default function Id() {
     return <NotAmbassadorError ambassadorStatus={userData.data.ambassador_verification} />;
   }
 
-  const emptyRows =
-    page > 0 ? Math.max(0, (1 + page) * rowsPerPage - unpaidTransactionsData?.data.transactions.length) : 0;
-
-  const handleChangePage = (event: React.MouseEvent<HTMLButtonElement> | null, newPage: number) => {
-    setPage(newPage);
-  };
-
-  const handleChangeRowsPerPage = (event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-    setRowsPerPage(parseInt(event.target.value, 10));
-    setPage(0);
-  };
-
   return (
     <Layout
       back
@@ -88,66 +77,42 @@ export default function Id() {
         unpaidTransactionsData?.data.customer?.name.trim() || unpaidTransactionsData?.data.customer?.legal_full_name
       }`}
     >
-      <Table aria-label="payment tracing">
-        <TableHead>
-          <TableRow>
-            <StyledTableCell>Order Id</StyledTableCell>
-            <StyledTableCell>Due Since</StyledTableCell>
-            <StyledTableCell>Due Amount</StyledTableCell>
-            <StyledTableCell>Status</StyledTableCell>
-          </TableRow>
-        </TableHead>
-
-        <TableBody>
+      {unpaidTransactionsData ? (
+        <ul role="list" className="divide-y divide-gray-200">
           {unpaidTransactionsData?.data.transactions.map((row) => (
-            <TableRow
-              key={`unpaid_t_${row.invoice_id}_${row.order_id}`}
-              sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
-              className="odd:bg-gray-light"
-            >
-              <StyledTableCell component="th" scope="row">
-                {row.order_id}
-              </StyledTableCell>
-
-              <StyledTableCell>{row.invoice_due_since ?? "N/A"}</StyledTableCell>
-
-              <StyledTableCell>
-                {parseFloat(row.order_status === "pending" ? row.initial_total : row.monthly_total).toFixed(2)}
-              </StyledTableCell>
-
-              <StyledTableCell>
-                {row.order_status === "pending" ? "Initial Payment Pending" : "Installment Due"}
-              </StyledTableCell>
-            </TableRow>
+            <li key={row.order_id}>
+              <div className="py-4 sm:px-6">
+                <div className="flex items-center justify-between">
+                  <p className="font-medium text-primary truncate">Order ID: {row.order_id}</p>
+                  <div className="ml-2 flex-shrink-0 flex">
+                    <p className="px-2 inline-flex leading-5 font-semibold rounded-full bg-green-100 text-green-800">
+                      {row.order_status === "pending" ? "Initial Payment Pending" : "Installment Due"}
+                    </p>
+                  </div>
+                </div>
+                <div className="mt-2 sm:flex sm:justify-between">
+                  <div className="sm:flex">
+                    <p className="flex items-center text-gray-500">
+                      Due amount:
+                      <span className="font-bold text-gray-detail ml-2">
+                        {parseFloat(row.order_status === "pending" ? row.initial_total : row.monthly_total).toFixed(2)}
+                      </span>
+                    </p>
+                    <p className="mt-2 flex items-center text-gray-500 sm:mt-0 sm:ml-6">
+                      Due since:
+                      <span className="font-bold text-gray-detail ml-2">{row.invoice_due_since ?? "N/A"}</span>
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </li>
           ))}
-
-          {emptyRows > 0 && (
-            <TableRow style={{ height: 53 * emptyRows }}>
-              <StyledTableCell colSpan={3} />
-            </TableRow>
-          )}
-        </TableBody>
-
-        <TableFooter>
-          <TableRow>
-            <TablePagination
-              rowsPerPageOptions={[5, 10, 25, { label: "All", value: -1 }]}
-              count={unpaidTransactionsData?.data.transactions.length}
-              rowsPerPage={10}
-              page={page}
-              SelectProps={{
-                inputProps: {
-                  "aria-label": "rows per page",
-                },
-                native: true,
-              }}
-              onPageChange={handleChangePage}
-              onRowsPerPageChange={handleChangeRowsPerPage}
-              ActionsComponent={TablePaginationActions}
-            />
-          </TableRow>
-        </TableFooter>
-      </Table>
+        </ul>
+      ) : (
+        <div className="space-y-6">
+          <Skeleton variant="rectangular" height={100} />
+        </div>
+      )}
     </Layout>
   );
 }

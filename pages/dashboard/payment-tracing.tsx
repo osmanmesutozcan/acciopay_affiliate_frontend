@@ -15,6 +15,7 @@ import { TablePaginationActions } from "../../components/TablePaginationArrowCom
 import { fetcher } from "../../utils/fetcher";
 import { StyledTableCell } from "../../styles/styledMui";
 import { formatDistanceToNow } from "date-fns";
+import { Loading } from "../../components/common/layoutComponents/Loading";
 
 interface IPaymentsData {
   id: number;
@@ -40,10 +41,13 @@ export default function PaymentTracing() {
   const [rowsPerPage, setRowsPerPage] = useState(5);
   const [paymentId, setPaymentId] = useState<null | number>(null);
 
-  const { data: detailData, error: detailError } = useSWR<{ data: IDetailData }, IErrorProps>(
-    paymentId ? `/api/ambassador/payments/${paymentId}` : null,
-    fetcher,
-  );
+  const {
+    data: detailData,
+    error: detailError,
+    isValidating: isValidatingDetailData,
+  } = useSWR<{ data: IDetailData }, IErrorProps>(paymentId ? `/api/ambassador/payments/${paymentId}` : null, fetcher, {
+
+  });
 
   const { data: paymentsData, error: paymentError } = useSWR<{ data: IPaymentsData[] }, IErrorProps>(
     "/api/ambassador/payments",
@@ -64,134 +68,90 @@ export default function PaymentTracing() {
   return (
     <Layout title="Payments" back>
       {paymentId && detailData && (
-        <>
+        <div className="mb-4">
           <h3 className="font-bold">Payout History (id: {paymentId})</h3>
-          <Table aria-label="simple table" className="mb-12">
-            <TableHead>
-              <TableRow>
-                <StyledTableCell>Status From</StyledTableCell>
-                <StyledTableCell>Status To</StyledTableCell>
-                <StyledTableCell align="right">Changed At</StyledTableCell>
-              </TableRow>
-            </TableHead>
-
-            <TableBody>
-              {detailData?.data.history.map((row) => (
-                <TableRow
-                  key={`payment_${row.id}`}
-                  sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
-                  className="odd:bg-gray-light"
-                >
-                  <StyledTableCell>{row.from ?? "--"}</StyledTableCell>
-
-                  <StyledTableCell>{row.to ?? "--"}</StyledTableCell>
-
-                  <StyledTableCell align="right">
-                    {formatDistanceToNow(new Date(row.created_at), { addSuffix: true })}
-                  </StyledTableCell>
-                </TableRow>
-              ))}
-
-              {emptyRows > 0 && (
-                <TableRow style={{ height: 53 * emptyRows }}>
-                  <StyledTableCell colSpan={3} />
-                </TableRow>
-              )}
-            </TableBody>
-
-            <TableFooter>
-              <TableRow>
-                <TablePagination
-                  rowsPerPageOptions={[5, 10, 25, { label: "All", value: -1 }]}
-                  count={paymentsData?.data.length}
-                  rowsPerPage={10}
-                  page={page}
-                  SelectProps={{
-                    inputProps: {
-                      "aria-label": "rows per page",
-                    },
-                    native: true,
-                  }}
-                  onPageChange={handleChangePage}
-                  onRowsPerPageChange={handleChangeRowsPerPage}
-                  ActionsComponent={TablePaginationActions}
-                  classes={{ toolbar: "px-0 " }}
-                />
-              </TableRow>
-            </TableFooter>
-          </Table>
-        </>
+          <ul role="list" className="divide-y divide-gray-200">
+            {detailData?.data.history.map((row) => (
+              <li key={row.id}>
+                <div className="py-4 sm:px-6">
+                  <div className="flex items-center justify-between">
+                    <p className="truncate text-gray-500">
+                      Status from:{" "}
+                      <span className="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">
+                        {row.from}
+                      </span>
+                    </p>
+                    <div className="ml-2 flex-shrink-0 flex">
+                      <p className=" text-gray-500">
+                        Status to:
+                        <span className="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">
+                          {row.to}
+                        </span>
+                      </p>
+                    </div>
+                  </div>
+                  <div className="mt-2 sm:flex sm:justify-between">
+                    <div className="sm:flex">
+                      <p className="flex items-center text-gray-500">
+                        Changed at:
+                        <span className="text-gray-detail ml-2">
+                          {formatDistanceToNow(new Date(row.created_at), { addSuffix: true })}
+                        </span>
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              </li>
+            ))}
+          </ul>
+        </div>
       )}
+      {!detailData && isValidatingDetailData && <Loading />}
 
-      <div className='flex items-center justify-between mb-2'>
-        <h3 className="font-bold">All Payouts</h3>
-      </div>
-      <Table aria-label="simple table">
-        <TableHead>
-          <TableRow>
-            <StyledTableCell>Id</StyledTableCell>
-            <StyledTableCell>Actions</StyledTableCell>
-            <StyledTableCell align="center">Amount</StyledTableCell>
-            <StyledTableCell align="center">Status</StyledTableCell>
-            <StyledTableCell align="center">Requested At</StyledTableCell>
-          </TableRow>
-        </TableHead>
-
-        <TableBody>
-          {paymentsData?.data.map((row) => (
-            <TableRow
-              key={`payment_${row.id}`}
-              sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
-              className="odd:bg-gray-light"
-            >
-              <StyledTableCell component="th" scope="row">
-                {row.id}
-              </StyledTableCell>
-
-              <StyledTableCell component="th" scope="row">
-                <button className={`underline ${row.id === paymentId ? 'font-bold' : ''}`} onClick={() => setPaymentId(row.id)}>
-                  See history
-                </button>
-              </StyledTableCell>
-
-              <StyledTableCell align="center">{parseFloat(row.commission_amount || "0").toFixed(2)}</StyledTableCell>
-
-              <StyledTableCell align="center">{row.status}</StyledTableCell>
-
-              <StyledTableCell align="center">
-                {formatDistanceToNow(new Date(row.created_at), { addSuffix: true })}
-              </StyledTableCell>
-            </TableRow>
-          ))}
-
-          {emptyRows > 0 && (
-            <TableRow style={{ height: 53 * emptyRows }}>
-              <StyledTableCell colSpan={3} />
-            </TableRow>
-          )}
-        </TableBody>
-
-        <TableFooter>
-          <TableRow>
-            <TablePagination
-              rowsPerPageOptions={[5, 10, 25, { label: "All", value: -1 }]}
-              count={paymentsData?.data.length}
-              rowsPerPage={10}
-              page={page}
-              SelectProps={{
-                inputProps: {
-                  "aria-label": "rows per page",
-                },
-                native: true,
-              }}
-              onPageChange={handleChangePage}
-              onRowsPerPageChange={handleChangeRowsPerPage}
-              ActionsComponent={TablePaginationActions}
-              classes={{ toolbar: "px-0 " }}
-            />
-          </TableRow>
-        </TableFooter>
-      </Table>
+      <h3 className="font-bold">All Payouts</h3>
+      <ul role="list" className="divide-y divide-gray-200">
+        {paymentsData?.data.map((row) => (
+          <li key={row.id}>
+            <div className="py-4 sm:px-6">
+              <div className="flex items-center justify-between">
+                <p className="font-medium text-indigo-600 truncate">ID: {row.id}</p>
+                <div className="ml-2 flex-shrink-0 flex">
+                  <button
+                    className={`underline text-xs text-primary ${row.id === paymentId ? "font-bold" : ""}`}
+                    onClick={() => setPaymentId(row.id)}
+                  >
+                    See history
+                  </button>
+                </div>
+              </div>
+              <div className="mt-2 sm:flex sm:justify-between">
+                <div className="sm:flex">
+                  <p className="flex items-center text-gray-500">
+                    Amount:
+                    <span className="text-gray-detail font-semibold ml-2">
+                      {parseFloat(row.commission_amount || "0").toFixed(2)}
+                    </span>
+                  </p>
+                  <p className="mt-2 flex items-center text-gray-500 sm:mt-0 sm:ml-6">
+                    Status:{" "}
+                    <span className="font-semibold ml-2 px-2 inline-flex leading-5 rounded-full bg-green-100 text-green-800">
+                      {row.status}
+                    </span>
+                  </p>
+                </div>
+                <div className="mt-2 flex items-center text-gray-500 sm:mt-0">
+                  <p>
+                    Requested at:{" "}
+                    <span className="text-gray-detail ml-2">
+                      {formatDistanceToNow(new Date(row.created_at), { addSuffix: true })}
+                    </span>
+                  </p>
+                </div>
+              </div>
+            </div>
+          </li>
+        ))}
+      </ul>
     </Layout>
   );
 }

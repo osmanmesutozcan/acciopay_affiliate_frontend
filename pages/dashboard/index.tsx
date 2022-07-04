@@ -132,17 +132,6 @@ export default function Dashboard() {
   const timeOfDay = new Date().getHours();
   const greeting = timeOfDay < 12 ? "morning" : timeOfDay > 18 ? "evening" : "afternoon";
 
-  const emptyRows = page > 0 ? Math.max(0, (1 + page) * rowsPerPage - unpaidUsersData?.data.length) : 0;
-
-  const handleChangePage = (event: React.MouseEvent<HTMLButtonElement> | null, newPage: number) => {
-    setPage(newPage);
-  };
-
-  const handleChangeRowsPerPage = (event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-    setRowsPerPage(parseInt(event.target.value, 10));
-    setPage(0);
-  };
-
   return (
     <Layout title="Dashboard" contentClassname="py-0 overflow-x-auto">
       <div className="flex items-center justify-between mb-2">
@@ -187,7 +176,6 @@ export default function Dashboard() {
           </div>
         </div>
       </div>
-
       <div className="relative mb-0 rounded-t-lg bg-gradient-to-r from-[#8C75FF] to-[#B9C4FF] text-white ">
         <div className="z-10 p-4 h-full w-full bg-cover bg-no-repeat bg-center" style={{ backgroundImage: `url("/wave.png")` }}>
           <p className="block font-semibold">Total referred users: </p>
@@ -198,7 +186,7 @@ export default function Dashboard() {
             {summaryData?.data.total_commissions_pending_formated ?? "--"}
           </h3>
 
-          <button className={`mt-4 z-40 ${summaryData?.data.total_commissions_pending === 0 ? 'hidden' : ''}`} onClick={handleRequestPayout} disabled={requesting || summaryData?.data.total_commissions_pending === 0}>
+          <button className={`mt-4 z-40 bg-white bg-opacity-20 px-2 py-1 rounded ${summaryData?.data.total_commissions_pending === 0 ? 'cursor-not-allowed' : 'hover:bg-opacity-30'}`} onClick={handleRequestPayout} disabled={requesting || summaryData?.data.total_commissions_pending === 0}>
             Request Payout
           </button>
         </div>
@@ -221,73 +209,38 @@ export default function Dashboard() {
       </div>
 
       <h3 className="font-bold">Due transactions overview</h3>
-      <Table aria-label="simple table">
-        <TableHead>
-          <TableRow>
-            <StyledTableCell>User</StyledTableCell>
-            <StyledTableCell>Email</StyledTableCell>
-            <StyledTableCell align="center">Unpaid amount</StyledTableCell>
-            <StyledTableCell align="center">Transactions paid/total</StyledTableCell>
-            {/*<TableCell align="right">Carbs&nbsp;(g)</TableCell>*/}
-            {/*<TableCell align="right">Protein&nbsp;(g)</TableCell>*/}
-          </TableRow>
-        </TableHead>
-
-        <TableBody>
-          {unpaidUsersData?.data.map((row) => (
-            <TableRow
-              key={`unpaid_user_${row.customer_id}`}
-              sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
-              className="odd:bg-gray-light"
-            >
-              <StyledTableCell component="th" scope="row">
-                <Link href={`/dashboard/user/${row.customer_id}`} passHref>
-                  <a className="underline">{row.full_name || row.legal_full_name}</a>
+      <ul role="list" className="divide-y divide-gray-200">
+        {unpaidUsersData?.data.map((row) => (
+          <li key={row.customer_id}>
+            <div className="py-4 sm:px-6">
+              <div className="flex items-center justify-between">
+                <Link href={`/dashboard/user/${row.customer_id}`}>
+                  <a className="font-medium text-primary truncate underline">{row.full_name || row.legal_full_name}</a>
                 </Link>
-              </StyledTableCell>
-
-              <StyledTableCell component="th" scope="row">
-                {row.email}
-              </StyledTableCell>
-
-              <StyledTableCell align="center">
-                {parseFloat(row.total_transaction_amount || "0") - parseFloat(row.paid_transaction_amount || "0")}
-              </StyledTableCell>
-
-              <StyledTableCell align="center">
-                {row.paid_transactions}/{row.total_transactions}
-              </StyledTableCell>
-            </TableRow>
-          ))}
-
-          {emptyRows > 0 && (
-            <TableRow style={{ height: 53 * emptyRows }}>
-              <StyledTableCell colSpan={3} />
-            </TableRow>
-          )}
-        </TableBody>
-
-        <TableFooter>
-          <TableRow>
-            <TablePagination
-              rowsPerPageOptions={[5, 10, 25, { label: "All", value: -1 }]}
-              count={unpaidUsersData?.data.length}
-              rowsPerPage={10}
-              page={page}
-              SelectProps={{
-                inputProps: {
-                  "aria-label": "rows per page",
-                },
-                native: true,
-              }}
-              onPageChange={handleChangePage}
-              onRowsPerPageChange={handleChangeRowsPerPage}
-              ActionsComponent={TablePaginationActions}
-              classes={{ toolbar: "px-0 " }}
-            />
-          </TableRow>
-        </TableFooter>
-      </Table>
+                <div className="ml-2 flex-shrink-0 flex">
+                  <p className="px-2 inline-flex text-xs leading-5 rounded-full bg-green-100 text-green-800">
+                    Transactions paid/total:{" "}
+                    <span className="font-bold ml-2">
+                      {row.paid_transactions}/{row.total_transactions}
+                    </span>
+                  </p>
+                </div>
+              </div>
+              <div className="mt-2 sm:flex sm:justify-between">
+                <div className="sm:flex">
+                  <p className="flex items-center text-gray-500">{row.email}</p>
+                  <p className="mt-2 flex items-center text-gray-500 sm:mt-0 sm:ml-6">
+                    Unpaid amount:{" "}
+                    <span className="font-semibold ml-2 text-gray-detail">
+                      {parseFloat(row.total_transaction_amount || "0") - parseFloat(row.paid_transaction_amount || "0")}
+                    </span>
+                  </p>
+                </div>
+              </div>
+            </div>
+          </li>
+        ))}
+      </ul>
     </Layout>
   );
 }
