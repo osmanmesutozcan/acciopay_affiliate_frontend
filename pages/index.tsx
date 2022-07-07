@@ -1,22 +1,20 @@
 import { Layout } from "../components/common/layoutComponents/Layout";
 import { PrimaryButton } from "../components/common/Button";
-import { affiliateProgram } from "../utils/config";
+import { accioPayEmail, affiliateProgram } from "../utils/config";
 import { useRouter } from "next/router";
-import useSWR from "swr";
-import { ICustomerData } from "../utils/schema";
-import { IErrorProps } from "../components/common/layoutComponents/Error";
-import { fetcher } from "../utils/fetcher";
 
 export default function AffiliateProgram() {
   const router = useRouter();
 
   return (
     <Layout title="Affiliate program" contentClassname="px-0">
-      <div className="relative h-72 bg-[url('/affiliate.png')] bg-cover bg-center">
-        <img src="affiliate-blob1.png" alt="Affiliate program blob" className="absolute left-0 top-0" />
-        <img src="affiliate-blob2.png" alt="Affiliate program blob" className="absolute right-0 bottom-0" />
-        <div className="absolute bg-gradient-to-b from-black/5 to-black/60 w-full h-full" />
-        <div className="w-fit flex flex-col items-center justify-center h-full mx-auto">
+      <div className="relative">
+        <div className="relative h-72 bg-[url('/affiliate.png')] bg-cover bg-center">
+          <img src="affiliate-blob1.png" alt="Affiliate program blob" className="absolute left-0 top-0" />
+          <img src="affiliate-blob2.png" alt="Affiliate program blob" className="absolute right-0 bottom-0" />
+          <div className="absolute bg-gradient-to-b from-black/5 to-black/60 w-full h-full" />
+        </div>
+        <div className="absolute top-0 w-full flex flex-col items-center justify-center h-full mx-auto">
           <h2
             className="text-4xl font-light text-white text-center mb-6"
             style={{ textShadow: "0px 4px 4px rgba(0, 0, 0, 0.25)" }}
@@ -48,10 +46,14 @@ export default function AffiliateProgram() {
           <TermItem item={perk} key={perk.title} />
         ))}
       </div>
-      <div className="bg-gray-light p-5 flex flex-col items-center text-center space-y-6">
-        <h3 className="font-bold">{affiliateProgram.qrCode.title}</h3>
-        <img src={affiliateProgram.qrCode.image} alt={affiliateProgram.qrCode.title} className="h-22 w-22" />
-        {affiliateProgram.qrCode.description}
+      <div className="bg-gray-light p-5 flex flex-col items-center text-center space-y-6 text-xs">
+        {/*<h3 className="font-bold">{affiliateProgram.qrCode.title}</h3>*/}
+        {/*<img src={affiliateProgram.qrCode.image} alt={affiliateProgram.qrCode.title} className="h-22 w-22" />*/}
+        If you have any questions, please write to{" "}
+        <a href={`mailto:${accioPayEmail.hello}`} className="font-bold text-primary">
+          {accioPayEmail.hello}
+        </a>{" "}
+        and we will get back to you as soon as possible
       </div>
       <div className="p-5 flex flex-col items-center text-center space-y-6">
         <h3>Your Fellow Student Affiliates</h3>
