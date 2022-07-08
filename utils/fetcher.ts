@@ -56,6 +56,9 @@ export const poster = async <T = any>(key: string, body: any, headers = {}, meth
   Object.assign(qp, { token: "true" });
 
   const token = getUserToken();
+  console.log(process.env.BACKEND_URL);
+  console.log({ path });
+  console.log({ qp }, { key });
 
   const res = await fetch(`${process.env.BACKEND_URL}${path}?${qs.stringify(qp)}`, {
     method,
