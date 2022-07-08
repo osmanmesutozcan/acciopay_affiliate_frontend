@@ -55,14 +55,14 @@ export default function AffiliateProgram() {
         </a>{" "}
         and we will get back to you as soon as possible
       </div>
-      <div className="p-5 flex flex-col items-center text-center space-y-6">
-        <h3>Your Fellow Student Affiliates</h3>
-        <div className="space-y-4">
-          {affiliateProgram.affiliateStudents.map((student, idx) => (
-            <StudentTestimony student={student} key={idx} />
-          ))}
-        </div>
-      </div>
+      {/*<div className="p-5 flex flex-col items-center text-center space-y-6">*/}
+      {/*  <h3>Your Fellow Student Affiliates</h3>*/}
+      {/*  <div className="space-y-4">*/}
+      {/*    {affiliateProgram.affiliateStudents.map((student, idx) => (*/}
+      {/*      <StudentTestimony student={student} key={idx} />*/}
+      {/*    ))}*/}
+      {/*  </div>*/}
+      {/*</div>*/}
     </Layout>
   );
 }
