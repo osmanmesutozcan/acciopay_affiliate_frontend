@@ -44,19 +44,19 @@ export default function AffiliateProgram() {
           <TermItem item={perk} key={perk.title} />
         ))}
       </div>
-      <div className="bg-gray-light p-5 flex flex-col items-center text-center space-y-6">
+      <div className="bg-gray-light p-5 flex flex-col items-center text-center space-y-6 -mb-5">
         <h3 className="font-bold">{affiliateProgram.qrCode.title}</h3>
         <img src={affiliateProgram.qrCode.image} alt={affiliateProgram.qrCode.title} className="h-22 w-22" />
         {affiliateProgram.qrCode.description}
       </div>
-      <div className="p-5 flex flex-col items-center text-center space-y-6">
-        <h3>Your Fellow Student Affiliates</h3>
-        <div className="space-y-4">
-          {affiliateProgram.affiliateStudents.map((student, idx) => (
-            <StudentTestimony student={student} key={idx} />
-          ))}
-        </div>
-      </div>
+      {/*<div className="p-5 flex flex-col items-center text-center space-y-6">*/}
+      {/*  <h3>Your Fellow Student Affiliates</h3>*/}
+      {/*  <div className="space-y-4">*/}
+      {/*    {affiliateProgram.affiliateStudents.map((student, idx) => (*/}
+      {/*      <StudentTestimony student={student} key={idx} />*/}
+      {/*    ))}*/}
+      {/*  </div>*/}
+      {/*</div>*/}
     </Layout>
   );
 }
