@@ -1,4 +1,7 @@
 import { Field, Form, Formik, FormikHelpers } from "formik";
+import { MobileDatePicker } from "@mui/x-date-pickers/MobileDatePicker";
+import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
+import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { Layout } from "../../components/common/layoutComponents/Layout";
 import { PrimaryButton } from "../../components/common/Button";
 import {
@@ -24,9 +27,9 @@ import useSWR from "swr";
 import { ICustomerData } from "../../utils/schema";
 import { IErrorProps } from "../../components/common/layoutComponents/Error";
 import { fetcher, poster } from "../../utils/fetcher";
-import Skeleton from "@mui/material/Skeleton";
 import { toPairs, valuesIn, values } from "lodash";
 import { LoadingInline } from "../../components/common/layoutComponents/Loading";
+import { format, parse } from "date-fns";
 
 interface StyledInputProps extends InputProps {
   error?: boolean;
@@ -77,7 +80,7 @@ const BootstrapInput = styled(InputBase)<StyledInputProps>(({ error, theme }) =>
 const VerifySchema = Yup.object().shape({
   full_name: Yup.string().required("Please enter full name"),
   residential_address: Yup.string().required("Please enter residential address"),
-  date_of_birth: Yup.string().required("Please enter birthdate"),
+  date_of_birth: Yup.mixed().required("Please enter birthdate"),
   gender: Yup.string().required("Please select gender"),
   countryPhoneCode: Yup.string().required("Please enter phone code"),
   phoneNumber: Yup.string().required("Please enter phone number"),
@@ -89,7 +92,7 @@ const VerifySchema = Yup.object().shape({
 interface IFormValues {
   full_name: string;
   residential_address: string;
-  date_of_birth: string;
+  date_of_birth: Date;
   gender: string;
   countryPhoneCode: string;
   phoneNumber: string;
@@ -117,7 +120,7 @@ export default function AffiliateSignup() {
             ? `${userData?.data?.legal_address?.block.value} ${userData?.data?.legal_address?.building.value}, ${userData?.data?.legal_address?.street.value}, ${userData?.data?.legal_address?.floor.value}, ${userData?.data?.legal_address?.unit.value}, ${userData?.data?.legal_address?.postal.value}`
             : "",
           gender: userData?.data?.gender || "",
-          date_of_birth: userData?.data?.date_of_birth || "",
+          date_of_birth: userData ? (parse(userData.data?.date_of_birth, "dd/MM/yyy", new Date()) as Date) : null,
           email: userData?.data?.email || "",
           institution: "",
           alum_year: "",
@@ -131,7 +134,6 @@ export default function AffiliateSignup() {
         validateOnChange={false}
         validateOnBlur={false}
         onSubmit={async (values: IFormValues, { setSubmitting, resetForm }: FormikHelpers<IFormValues>) => {
-          console.log(values);
           try {
             const res = await poster("/api/ambassador/apply", {
               full_name: values.full_name,
@@ -163,6 +165,7 @@ export default function AffiliateSignup() {
           handleSubmit,
           isSubmitting,
           isValidating,
+          setFieldValue,
 
           /* and other goodies */
         }) => (
@@ -185,14 +188,29 @@ export default function AffiliateSignup() {
                 placeholder="Block number building, street, floor, unit, postal code"
                 error={errors.residential_address}
               />
-              <FormInputField
-                label="Birthdate*:"
-                fieldName="date_of_birth"
-                value={values.date_of_birth}
-                handleChange={handleChange}
-                placeholder="01/01/2001"
-                error={errors.date_of_birth}
-              />
+
+              <LocalizationProvider dateAdapter={AdapterDateFns}>
+                <MobileDatePicker
+                  inputFormat="dd/MM/yyyy"
+                  value={values.date_of_birth}
+                  onChange={(newValue) => {
+                    setFieldValue("date_of_birth", newValue);
+                  }}
+                  renderInput={({ inputRef, inputProps }) => (
+                    <div className="space-y-2">
+                      <label htmlFor="date_of_birth" className="font-bold text-gray-detail">
+                        Birthdate*:
+                      </label>
+                      <input
+                        placeholder="31/01/2002"
+                        ref={inputRef}
+                        {...inputProps}
+                        className={twMerge(textInputClasses, errors.date_of_birth && "border-danger-text")}
+                      />
+                    </div>
+                  )}
+                />
+              </LocalizationProvider>
 
               <FormSelectField
                 label="Gender*:"
@@ -332,7 +350,7 @@ export default function AffiliateSignup() {
 interface IFormFieldProps {
   label: string;
   fieldName: string;
-  value?: string | number;
+  value?: string | number | Date;
   handleChange: (e: React.ChangeEvent<any>) => void;
   placeholder?: string;
   type?: string;
