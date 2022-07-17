@@ -181,7 +181,7 @@ export default function Dashboard() {
           <p className="block font-semibold">Total referred users: </p>
           <h3 className="block text-lg font-bold leading-tight">{summaryData?.data.total_referred_users ?? "--"}</h3>
 
-          <p className="block font-semibold mt-4">Total transactions subject to commission:</p>
+          <p className="block font-semibold mt-4">Total commission subject to transactions:</p>
           <h3 className="block text-lg font-bold leading-tight">
             {summaryData?.data.total_commissions_pending_formated ?? "--"}
           </h3>
