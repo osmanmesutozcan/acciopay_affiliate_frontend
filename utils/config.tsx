@@ -170,32 +170,18 @@ export const shippingTime = [
 
 export const footerNavigation = {
   main: [
-    { name: "Help", href: "https://staging.acciopay.sg/help" },
-    { name: "About us", href: "https://staging.acciopay.sg/about-us" },
-    { name: "Affiliate programs", href: "/" },
+    { name: "Help", href: "https://acciopay.sg/help" },
+    { name: "About us", href: "https://acciopay.sg/about-us" },
+    { name: "Affiliate program", href: "/" },
   ],
   legal: [
-    { name: "Privacy Policy", href: "https://staging.acciopay.sg/privacy-policy" },
-    { name: "Terms of Use", href: "https://staging.acciopay.sg/terms-of-use" },
+    { name: "Privacy Policy", href: "https://acciopay.sg/legal/privacy-policy" },
+    { name: "Terms of Use", href: "https://acciopay.sg/legal/terms-of-use" },
   ],
   social: [
     {
-      name: "Facebook",
-      href: "#",
-      icon: (props) => (
-        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" {...props}>
-          <path
-            fillRule="evenodd"
-            clipRule="evenodd"
-            d="M13.5494 3.25L13.5173 3.25016C11.7591 3.26794 10.3481 4.70767 10.3659 6.46593C10.3659 6.46594 10.3659 6.46592 10.3659 6.46593L10.3725 7.12053L10.3725 7.13788L10.3257 10.7434C10.3204 11.1538 9.98617 11.4837 9.57575 11.4837H6.75V13.7822H9.62255C10.0368 13.7822 10.3726 14.1179 10.3726 14.5322V20.75H13.2601V14.5322C13.2601 14.1179 13.5959 13.7822 14.0101 13.7822H16.7722L17.1258 11.4837H14.0101C13.5959 11.4837 13.2601 11.1479 13.2601 10.7337V7.2833C13.2601 6.32596 14.0362 5.54985 14.9936 5.54985H17.25V3.25H13.5494ZM13.5021 1.75024L13.5494 1.75H18C18.4142 1.75 18.75 2.08579 18.75 2.5V6.29985C18.75 6.71406 18.4142 7.04985 18 7.04985H14.9936C14.8647 7.04985 14.7601 7.15434 14.7601 7.2833V9.9837H18C18.2188 9.9837 18.4267 10.0793 18.5692 10.2453C18.7117 10.4114 18.7746 10.6315 18.7413 10.8477L18.1569 14.6462C18.1006 15.0121 17.7858 15.2822 17.4156 15.2822H14.7601V21.5C14.7601 21.9142 14.4244 22.25 14.0101 22.25H9.62255C9.20834 22.25 8.87255 21.9142 8.87255 21.5V15.2822H6C5.58579 15.2822 5.25 14.9464 5.25 14.5322V10.7337C5.25 10.3195 5.58579 9.9837 6 9.9837H8.83542L8.8725 7.1271L8.86594 6.48117C8.8398 3.89454 10.9155 1.77643 13.5021 1.75024Z"
-            fill="#418DD7"
-          />
-        </svg>
-      ),
-    },
-    {
       name: "Tiktok",
-      href: "#",
+      href: "https://www.tiktok.com/@acciopay.io",
       icon: (props) => (
         <svg xmlns="http://www.w3.org/2000/svg" fill="none" height="25" viewBox="0 0 24 25" width="24" {...props}>
           <path
@@ -207,7 +193,7 @@ export const footerNavigation = {
     },
     {
       name: "Instagram",
-      href: "#",
+      href: "https://www.instagram.com/acciopay.io",
       icon: (props) => (
         <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" {...props}>
           <path
