@@ -13,13 +13,12 @@ import { TablePaginationActions } from "../../components/TablePaginationArrowCom
 import useSWR from "swr";
 import { ICustomerData } from "../../utils/schema";
 import { IErrorProps, NotAmbassadorError } from "../../components/common/layoutComponents/Error";
-import {fetcher, poster} from "../../utils/fetcher";
+import { fetcher, poster } from "../../utils/fetcher";
 import { useRouter } from "next/router";
 import { Loading } from "../../components/common/layoutComponents/Loading";
 
-import {toast} from "react-toastify";
-import 'react-toastify/dist/ReactToastify.css';
-
+import { toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 interface ISummaryData {
   total_commissions: number;
@@ -46,6 +45,20 @@ interface IUnpaidUserData {
   total_transaction_amount: string;
 }
 
+interface ICommissionData {
+  full_name: string;
+  legal_full_name: string;
+
+  customer_id: number;
+  email: string;
+  order_id: number;
+
+  commission_amount: string;
+  commission_type: "new_user" | "sales";
+  commissions_count: number;
+  commission_amount_formatted: string;
+}
+
 export default function Dashboard() {
   const router = useRouter();
   const [page, setPage] = useState(0);
@@ -68,10 +81,10 @@ export default function Dashboard() {
   } = useSWR<{ data: ISummaryData }, IErrorProps>("/api/ambassador/summary", fetcher);
 
   const {
-    data: unpaidUsersData,
-    error: unpaidUsersError,
-    isValidating: isValidatingUnpaidUsersData,
-  } = useSWR<{ data: IUnpaidUserData[] }, IErrorProps>("/api/ambassador/unpaid-users", fetcher);
+    data: commissionData,
+    error: commissionError,
+    isValidating: isValidatingCommissionDataData,
+  } = useSWR<{ data: ICommissionData[] }, IErrorProps>("/api/ambassador/commissions", fetcher);
 
   useEffect(() => {
     if (copiedReferralCode) {
@@ -109,21 +122,20 @@ export default function Dashboard() {
     setRequesting(true);
 
     try {
-      const res = await poster('/api/ambassador/request-payout', {});
+      const res = await poster("/api/ambassador/request-payout", {});
       await mutateSummaryData();
 
       if (!res.success) {
-        toast(res.message || 'Something went wrong', {
-          type: 'error',
+        toast(res.message || "Something went wrong", {
+          type: "error",
         });
       } else {
-        toast('Payout requested', {
-          type: 'success',
+        toast("Payout requested", {
+          type: "success",
         });
       }
-    }
-    catch (e) {
-      console.log(e)
+    } catch (e) {
+      console.log(e);
     }
 
     setRequesting(false);
@@ -177,7 +189,10 @@ export default function Dashboard() {
         </div>
       </div>
       <div className="relative mb-0 rounded-t-lg bg-gradient-to-r from-[#8C75FF] to-[#B9C4FF] text-white ">
-        <div className="z-10 p-4 h-full w-full bg-cover bg-no-repeat bg-center" style={{ backgroundImage: `url("/wave.png")` }}>
+        <div
+          className="z-10 p-4 h-full w-full bg-cover bg-no-repeat bg-center"
+          style={{ backgroundImage: `url("/wave.png")` }}
+        >
           <p className="block font-semibold">Total referred users: </p>
           <h3 className="block text-lg font-bold leading-tight">{summaryData?.data.total_referred_users ?? "--"}</h3>
 
@@ -186,7 +201,13 @@ export default function Dashboard() {
             {summaryData?.data.total_commissions_pending_formated ?? "--"}
           </h3>
 
-          <button className={`mt-4 z-40 bg-white bg-opacity-20 px-2 py-1 rounded ${summaryData?.data.total_commissions_pending === 0 ? 'cursor-not-allowed' : 'hover:bg-opacity-30'}`} onClick={handleRequestPayout} disabled={requesting || summaryData?.data.total_commissions_pending === 0}>
+          <button
+            className={`mt-4 z-40 bg-white bg-opacity-20 px-2 py-1 rounded ${
+              summaryData?.data.total_commissions_pending === 0 ? "cursor-not-allowed" : "hover:bg-opacity-30"
+            }`}
+            onClick={handleRequestPayout}
+            disabled={requesting || summaryData?.data.total_commissions_pending === 0}
+          >
             Request Payout
           </button>
         </div>
@@ -200,43 +221,45 @@ export default function Dashboard() {
           </a>
         </Link>
 
-        <Link href="/">
-          <a className="flex flex-col items-center cursor-pointer no-underline">
-            <TransactionIconColored className="h-6 w-6" />
-            <p className="text-xs text-gray-500 pt-1">Uncompleted</p>
-          </a>
-        </Link>
+        {/*<Link href="/">*/}
+        {/*  <a className="flex flex-col items-center cursor-pointer no-underline">*/}
+        {/*    <TransactionIconColored className="h-6 w-6" />*/}
+        {/*    <p className="text-xs text-gray-500 pt-1">Uncompleted</p>*/}
+        {/*  </a>*/}
+        {/*</Link>*/}
       </div>
 
-      <h3 className="font-bold">Due transactions overview</h3>
+      <h3 className="font-bold">Commissions overview</h3>
       <ul role="list" className="divide-y divide-gray-200">
-        {unpaidUsersData?.data.map((row) => (
+        {commissionData?.data.map((row) => (
           <li key={row.customer_id}>
             <div className="py-4 sm:px-6">
               <div className="flex items-center justify-between">
-                <Link href={`/dashboard/user/${row.customer_id}`}>
-                  <a className="font-medium text-primary truncate underline">{row.full_name || row.legal_full_name}</a>
-                </Link>
-                <div className="ml-2 flex-shrink-0 flex">
+                <div>
+                  <p className="font-medium text-primary truncate">{row.full_name || row.legal_full_name}</p>
+                  <p className="flex items-center text-gray-500 mt-2">{row.email}</p>
+                </div>
+                <div className="ml-2 flex-shrink-0 flex flex-col">
                   <p className="px-2 inline-flex text-xs leading-5 rounded-full bg-green-100 text-green-800">
-                    Transactions paid/total:{" "}
-                    <span className="font-bold ml-2">
-                      {row.paid_transactions}/{row.total_transactions}
-                    </span>
+                    {row.commission_type === "sales" ? "Referral commission" : "New user commission"}{" "}
+                    <span className="font-bold ml-2">({row.commissions_count}/3)</span>
+                  </p>
+                  <p className="px-2 mt-2">
+                    Commission earned <span className="ml-1 font-bold">{row.commission_amount_formatted}</span>
                   </p>
                 </div>
               </div>
-              <div className="mt-2 sm:flex sm:justify-between">
-                <div className="sm:flex">
-                  <p className="flex items-center text-gray-500">{row.email}</p>
-                  <p className="mt-2 flex items-center text-gray-500 sm:mt-0 sm:ml-6">
-                    Unpaid amount:{" "}
-                    <span className="font-semibold ml-2 text-gray-detail">
-                      {parseFloat(row.total_transaction_amount || "0") - parseFloat(row.paid_transaction_amount || "0")}
-                    </span>
-                  </p>
-                </div>
-              </div>
+              {/*<div className="mt-2 sm:flex sm:justify-between">*/}
+              {/*  <div className="sm:flex">*/}
+              {/*    <p className="flex items-center text-gray-500">{row.email}</p>*/}
+              {/*<p className="mt-2 flex items-center text-gray-500 sm:mt-0 sm:ml-6">*/}
+              {/*  Unpaid amount:{" "}*/}
+              {/*  <span className="font-semibold ml-2 text-gray-detail">*/}
+              {/*    {parseFloat(row.total_transaction_amount || "0") - parseFloat(row.paid_transaction_amount || "0")}*/}
+              {/*  </span>*/}
+              {/*</p>*/}
+              {/*  </div>*/}
+              {/*</div>*/}
             </div>
           </li>
         ))}

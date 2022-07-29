@@ -417,3 +417,10 @@ export const institutionsOfStudy = [
   { title: "St.Gallen Institute of Management in Asia", value: "St.Gallen Institute of Management in Asia" },
   { title: "Temasek Polytechnic", value: "Temasek Polytechnic" },
 ];
+
+export const alumYearOptions = [
+  { title: "Year 1", value: 1 },
+  { title: "Year 2", value: 2 },
+  { title: "Year 3", value: 3 },
+  { title: "Year 4", value: 4 },
+];

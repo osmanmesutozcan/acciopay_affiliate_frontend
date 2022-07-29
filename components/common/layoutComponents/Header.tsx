@@ -100,7 +100,11 @@ export function Header({ back = false, title }: IHeaderProps) {
       router.pathname === "/search" ||
       "/checkout/proceed"
     ) {
-      return <AccioPayLogo />;
+      return (
+        <div className="w-24">
+          <AccioPayLogo />
+        </div>
+      );
     }
   }
 

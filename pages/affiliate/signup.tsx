@@ -6,6 +6,7 @@ import { Layout } from "../../components/common/layoutComponents/Layout";
 import { PrimaryButton } from "../../components/common/Button";
 import {
   accioPayEmail,
+  alumYearOptions,
   countryCodeOptions,
   genderOptions,
   institutionsOfStudy,
@@ -278,13 +279,12 @@ export default function AffiliateSignup() {
                 error={errors.institution}
               />
 
-              <FormInputField
+              <FormSelectField
                 label="Year of Study*:"
                 fieldName="alum_year"
                 value={values.alum_year}
-                type="number"
                 handleChange={handleChange}
-                placeholder="2020"
+                options={alumYearOptions}
                 error={errors.alum_year}
               />
             </div>
@@ -403,7 +403,7 @@ function FormSelectField({
   handleChange,
   options,
   error,
-}: IFormFieldProps & { options: { title: string; value: string }[] }) {
+}: IFormFieldProps & { options: { title: string; value: string | number }[] }) {
   return (
     <div className="flex flex-col space-y-2">
       <label htmlFor={fieldName} className="font-bold text-gray-detail">

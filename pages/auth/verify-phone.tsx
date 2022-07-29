@@ -59,7 +59,6 @@ export default function VerifyPhone() {
 
       // Unreachable until we decide if we want verification here.
 
-
       const alreadyCompleted = data?.verification_steps_completed ?? [];
 
       if (redirect) {
@@ -93,7 +92,9 @@ export default function VerifyPhone() {
 
   return (
     <div className="p-4 text-center ">
-      <AccioPayLogo className="w-full" />
+      <div className="w-24 mx-auto">
+        <AccioPayLogo />
+      </div>
       <div className="my-20">
         <h1 className="text-xl font-bold mb-4">Enter OTP</h1>
         <p className="text-gray-paragraph w-72 mx-auto">Please enter the 4 digit code sent to +{phone} through SMS</p>

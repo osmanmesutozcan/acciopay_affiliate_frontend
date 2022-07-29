@@ -31,7 +31,9 @@ export default function SignUp() {
 
   return (
     <div className="p-4 h-screen">
-      <AccioPayLogo className="w-full" />
+      <div className="w-24 mx-auto">
+        <AccioPayLogo />
+      </div>
 
       <div className="mt-40 space-y-2 text-center">
         <h1 className="text-xl font-semibold">Shop with Acciopay</h1>
