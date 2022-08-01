@@ -169,7 +169,7 @@ export function Header({ back = false, title }: IHeaderProps) {
         onClick={() => setOpenDrawer(false)}
       >
         <div className="px-5 p-2">
-          <div className="pt-2 pb-3">
+          <div className="pt-2 pb-3 w-24">
             <AccioPayLogo />
           </div>
 
