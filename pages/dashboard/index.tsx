@@ -216,21 +216,21 @@ export default function Dashboard() {
         </div>
       </div>
 
-      <div className="grid grid-cols-3 divide-x divide-gray-200 mb-4 bg-white py-6">
-        <Link href="/dashboard/payment-tracing">
-          <a className="flex flex-col items-center cursor-pointer no-underline">
-            <TransactionIconColored className="h-6 w-6" />
-            <p className="text-xs text-gray-500 pt-1">Payment tracing</p>
-          </a>
-        </Link>
+      {/*<div className="grid grid-cols-3 divide-x divide-gray-200 mb-4 bg-white py-6">*/}
+      <Link href="/dashboard/payment-tracing">
+        <a className="flex flex-col items-center cursor-pointer no-underline my-6 mr-auto">
+          <TransactionIconColored className="h-6 w-6" />
+          <p className="text-xs text-gray-500 pt-1">Payment tracing</p>
+        </a>
+      </Link>
 
-        {/*<Link href="/">*/}
-        {/*  <a className="flex flex-col items-center cursor-pointer no-underline">*/}
-        {/*    <TransactionIconColored className="h-6 w-6" />*/}
-        {/*    <p className="text-xs text-gray-500 pt-1">Uncompleted</p>*/}
-        {/*  </a>*/}
-        {/*</Link>*/}
-      </div>
+      {/*<Link href="/">*/}
+      {/*  <a className="flex flex-col items-center cursor-pointer no-underline">*/}
+      {/*    <TransactionIconColored className="h-6 w-6" />*/}
+      {/*    <p className="text-xs text-gray-500 pt-1">Uncompleted</p>*/}
+      {/*  </a>*/}
+      {/*</Link>*/}
+      {/*</div>*/}
 
       <h3 className="font-bold">Commissions overview</h3>
       <ul role="list" className="divide-y divide-gray-200">
@@ -239,10 +239,8 @@ export default function Dashboard() {
             <div className="py-4 sm:px-6">
               <div className="flex items-center justify-between">
                 <div className="flex flex-col min-w-0">
-                  <p className="font-medium text-primary truncate">
-                    {row.full_name || row.legal_full_name}dkm wemfoewmo
-                  </p>
-                  <p className="text-gray-500 mt-2 truncate">{row.email} lsdkm lajf mlsfndjne</p>
+                  <p className="font-medium text-primary truncate">{row.full_name || row.legal_full_name}</p>
+                  <p className="text-gray-500 mt-2 truncate">{row.email} </p>
                 </div>
                 <div className="ml-3 shrink-0 flex flex-col">
                   <p className="px-2 inline-flex text-xs leading-5 rounded-full bg-green-100 text-green-800 text-center ml-auto">
