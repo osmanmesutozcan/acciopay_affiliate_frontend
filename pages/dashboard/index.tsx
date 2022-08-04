@@ -242,7 +242,9 @@ export default function Dashboard() {
                 <div className="ml-2 flex-shrink-0 flex flex-col">
                   <p className="px-2 inline-flex text-xs leading-5 rounded-full bg-green-100 text-green-800">
                     {row.commission_type === "sales" ? "Referral commission" : "New user commission"}{" "}
-                    <span className="font-bold ml-2">({row.commissions_count}/3)</span>
+                    {row.commission_type === "sales" && (
+                      <span className="font-bold ml-2">({row.commissions_count}/3)</span>
+                    )}
                   </p>
                   <p className="px-2 mt-2">
                     Commission earned <span className="ml-1 font-bold">{row.commission_amount_formatted}</span>
