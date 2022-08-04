@@ -238,33 +238,24 @@ export default function Dashboard() {
           <li key={row.customer_id}>
             <div className="py-4 sm:px-6">
               <div className="flex items-center justify-between">
-                <div className="flex-shrink-0 flex flex-col max-w-[150px]">
-                  <p className="font-medium text-primary truncate">{row.full_name || row.legal_full_name}</p>
-                  <p className="flex items-center text-gray-500 mt-2 truncate">{row.email}</p>
+                <div className="flex flex-col min-w-0">
+                  <p className="font-medium text-primary truncate">
+                    {row.full_name || row.legal_full_name}dkm wemfoewmo
+                  </p>
+                  <p className="text-gray-500 mt-2 truncate">{row.email} lsdkm lajf mlsfndjne</p>
                 </div>
-                <div className="ml-2 flex-shrink-0 flex flex-col">
+                <div className="ml-3 shrink-0 flex flex-col">
                   <p className="px-2 inline-flex text-xs leading-5 rounded-full bg-green-100 text-green-800 text-center ml-auto">
-                    {row.commission_type === "sales" ? "Referral commission" : "New user commission"}{" "}
+                    {row.commission_type === "sales" ? "Sales" : "Referral"}{" "}
                     {row.commission_type === "sales" && (
                       <span className="font-bold ml-2">({row.commissions_count}/3)</span>
                     )}
                   </p>
                   <p className="mt-2">
-                    Commission earned <span className="ml-1 font-bold">{row.commission_amount_formatted}</span>
+                    Earned: <span className="ml-1 font-bold">{row.commission_amount_formatted}</span>
                   </p>
                 </div>
               </div>
-              {/*<div className="mt-2 sm:flex sm:justify-between">*/}
-              {/*  <div className="sm:flex">*/}
-              {/*    <p className="flex items-center text-gray-500">{row.email}</p>*/}
-              {/*<p className="mt-2 flex items-center text-gray-500 sm:mt-0 sm:ml-6">*/}
-              {/*  Unpaid amount:{" "}*/}
-              {/*  <span className="font-semibold ml-2 text-gray-detail">*/}
-              {/*    {parseFloat(row.total_transaction_amount || "0") - parseFloat(row.paid_transaction_amount || "0")}*/}
-              {/*  </span>*/}
-              {/*</p>*/}
-              {/*  </div>*/}
-              {/*</div>*/}
             </div>
           </li>
         ))}

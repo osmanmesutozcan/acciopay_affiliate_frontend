@@ -37,21 +37,21 @@ export const countryCodeOptions = [
     phoneCodeWithIcon: "🇸🇬+65",
     code: "sg",
   },
-  { countryName: "China", countryNameWithIcon: "🇨🇳China", phoneCode: "+86", phoneCodeWithIcon: "🇨🇳+65", code: "cn" },
-  {
-    countryName: "Indonesia",
-    countryNameWithIcon: "🇮🇩Indonesia",
-    phoneCode: "+62",
-    phoneCodeWithIcon: "🇮🇩+65",
-    code: "id",
-  },
-  {
-    countryName: "Thailand",
-    countryNameWithIcon: "🇹🇭Thailand",
-    phoneCode: "+6",
-    phoneCodeWithIcon: "🇹🇭+66",
-    code: "th",
-  },
+  // { countryName: "China", countryNameWithIcon: "🇨🇳China", phoneCode: "+86", phoneCodeWithIcon: "🇨🇳+65", code: "cn" },
+  // {
+  //   countryName: "Indonesia",
+  //   countryNameWithIcon: "🇮🇩Indonesia",
+  //   phoneCode: "+62",
+  //   phoneCodeWithIcon: "🇮🇩+65",
+  //   code: "id",
+  // },
+  // {
+  //   countryName: "Thailand",
+  //   countryNameWithIcon: "🇹🇭Thailand",
+  //   phoneCode: "+6",
+  //   phoneCodeWithIcon: "🇹🇭+66",
+  //   code: "th",
+  // },
 ];
 
 export const headerNavigation = [
