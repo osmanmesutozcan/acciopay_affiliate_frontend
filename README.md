@@ -25,14 +25,8 @@ You can start editing the page by modifying `pages/index.ts`. The page auto-upda
 
 ## Add/edit/delete text or variables
 
-For editing data given below navigate to `utils/config.tsx` file:
+For editing data navigate to `utils/config.tsx` file
 
-- Acciopay email - `accioPayEmail`
-- Featured brands in category page - `brands` (make sure brands ids match ids in database)
-- Installments month count options - `monthsOptions`
-- Available country phone codes options - `countryCodeOptions`
-- Header (menu) navigation - `headerNavigation`
-- Shipping time options - `shippingTime`
 
 ## Learn More
 
