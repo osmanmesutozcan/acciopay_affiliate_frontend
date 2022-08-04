@@ -131,7 +131,7 @@ export default function VerifyPhone() {
           </button>
         </p>
         <PrimaryButton className="w-full mt-6" onClick={handleVerify}>
-          Verify
+          Enter
         </PrimaryButton>
       </div>
     </div>

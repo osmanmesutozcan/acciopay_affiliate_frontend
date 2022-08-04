@@ -19,6 +19,7 @@ import { Loading } from "../../components/common/layoutComponents/Loading";
 
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import { PrimaryButton } from "../../components/common/Button";
 
 interface ISummaryData {
   total_commissions: number;
@@ -201,15 +202,17 @@ export default function Dashboard() {
             {summaryData?.data.total_commissions_pending_formated ?? "--"}
           </h3>
 
-          <button
-            className={`mt-4 z-40 bg-white bg-opacity-20 px-2 py-1 rounded ${
-              summaryData?.data.total_commissions_pending === 0 ? "cursor-not-allowed" : "hover:bg-opacity-30"
+          <PrimaryButton
+            className={`mt-4 z-40 px-2 h-10 py-1 rounded ${
+              summaryData?.data.total_commissions_pending === 0
+                ? "cursor-not-allowed  bg-white bg-opacity-20 "
+                : "hover:bg-opacity-30"
             }`}
             onClick={handleRequestPayout}
             disabled={requesting || summaryData?.data.total_commissions_pending === 0}
           >
-            Request Payout
-          </button>
+            {requesting ? "Requesting Payout" : "Request Payout"}
+          </PrimaryButton>
         </div>
       </div>
 
@@ -235,18 +238,18 @@ export default function Dashboard() {
           <li key={row.customer_id}>
             <div className="py-4 sm:px-6">
               <div className="flex items-center justify-between">
-                <div>
+                <div className="flex-shrink-0 flex flex-col max-w-[150px]">
                   <p className="font-medium text-primary truncate">{row.full_name || row.legal_full_name}</p>
-                  <p className="flex items-center text-gray-500 mt-2">{row.email}</p>
+                  <p className="flex items-center text-gray-500 mt-2 truncate">{row.email}</p>
                 </div>
                 <div className="ml-2 flex-shrink-0 flex flex-col">
-                  <p className="px-2 inline-flex text-xs leading-5 rounded-full bg-green-100 text-green-800">
+                  <p className="px-2 inline-flex text-xs leading-5 rounded-full bg-green-100 text-green-800 text-center ml-auto">
                     {row.commission_type === "sales" ? "Referral commission" : "New user commission"}{" "}
                     {row.commission_type === "sales" && (
                       <span className="font-bold ml-2">({row.commissions_count}/3)</span>
                     )}
                   </p>
-                  <p className="px-2 mt-2">
+                  <p className="mt-2">
                     Commission earned <span className="ml-1 font-bold">{row.commission_amount_formatted}</span>
                   </p>
                 </div>

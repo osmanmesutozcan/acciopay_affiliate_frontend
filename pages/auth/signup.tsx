@@ -82,7 +82,7 @@ export default function SignUp() {
 
           /* and other goodies */
         }) => (
-          <Form className="flex flex-col justify-between h-1/3">
+          <Form className="flex flex-col justify-between">
             <div className="flex mt-3">
               <Field
                 as="select"
@@ -114,7 +114,7 @@ export default function SignUp() {
             {errors.phoneNumber && touched.phoneNumber && errors.phoneNumber && <span>{errors.phoneNumber}</span>}
 
             <PrimaryButton type="submit" disabled={isSubmitting || values.phoneNumber === ""} className="w-full mt-6">
-              {isSubmitting && <LoadingInline color="#fff" className="mr-2" />}sign up/login
+              {isSubmitting && <LoadingInline color="#fff" className="mr-2" />}Sign up / Login
             </PrimaryButton>
 
             <div className="my-6 w-full">
