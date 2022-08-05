@@ -19,7 +19,7 @@ import * as Yup from "yup";
 import MenuItem from "@mui/material/MenuItem";
 import Select from "@mui/material/Select";
 import { styled } from "@mui/material/styles";
-import { InputBase, InputProps } from "@mui/material";
+import { InputBase, InputLabel, InputProps } from "@mui/material";
 import { inspect } from "util";
 import { DownIcon } from "../../components/common/iconComponents/DownArrowIcon";
 import { Alert } from "../../components/common/Modal";
@@ -29,8 +29,8 @@ import { ICustomerData } from "../../utils/schema";
 import { IErrorProps } from "../../components/common/layoutComponents/Error";
 import { fetcher, poster } from "../../utils/fetcher";
 import { toPairs, valuesIn, values } from "lodash";
-import { LoadingInline } from "../../components/common/layoutComponents/Loading";
-import { format, parse } from "date-fns";
+import { Loading, LoadingInline } from "../../components/common/layoutComponents/Loading";
+import { parse } from "date-fns";
 
 interface StyledInputProps extends InputProps {
   error?: boolean;
@@ -112,6 +112,14 @@ export default function AffiliateSignup() {
     fetcher
   );
 
+  if (!userData && !userError) {
+    return (
+      <Layout contentClassname="py-0 h-full justify-center">
+        <Loading />
+      </Layout>
+    );
+  }
+
   return (
     <Layout back title="Affiliate Program Application" contentClassname="pt-0">
       <Formik
@@ -121,7 +129,7 @@ export default function AffiliateSignup() {
             ? `${userData?.data?.legal_address?.block.value} ${userData?.data?.legal_address?.building.value}, ${userData?.data?.legal_address?.street.value}, ${userData?.data?.legal_address?.floor.value}, ${userData?.data?.legal_address?.unit.value}, ${userData?.data?.legal_address?.postal.value}`
             : "",
           gender: userData?.data?.gender || "",
-          date_of_birth: userData ? (parse(userData.data?.date_of_birth, "dd/MM/yyy", new Date()) as Date) : null,
+          date_of_birth: userData ? (parse(userData?.data?.date_of_birth, "dd/MM/yyyy", new Date()) as Date) : null,
           email: userData?.data?.email || "",
           institution: "",
           alum_year: "",
@@ -207,6 +215,7 @@ export default function AffiliateSignup() {
                         ref={inputRef}
                         {...inputProps}
                         className={twMerge(textInputClasses, errors.date_of_birth && "border-danger-text")}
+                        // value={values.date_of_birth}
                       />
                     </div>
                   )}
@@ -220,6 +229,7 @@ export default function AffiliateSignup() {
                 handleChange={handleChange}
                 options={genderOptions}
                 error={errors.gender}
+                placeholder="Choose"
               />
 
               <div className="space-y-2">
@@ -238,6 +248,7 @@ export default function AffiliateSignup() {
                       },
                     }}
                     error={errors.countryPhoneCode}
+                    options={countryCodeOptions.map((opt) => ({ value: opt.phoneCode, title: opt.phoneCode }))}
                   >
                     {countryCodeOptions.map((item) => (
                       <MenuItem
@@ -277,6 +288,7 @@ export default function AffiliateSignup() {
                 handleChange={handleChange}
                 options={institutionsOfStudy}
                 error={errors.institution}
+                placeholder="Choose"
               />
 
               <FormSelectField
@@ -286,6 +298,7 @@ export default function AffiliateSignup() {
                 handleChange={handleChange}
                 options={alumYearOptions}
                 error={errors.alum_year}
+                placeholder="Year 1"
               />
             </div>
 
@@ -377,8 +390,8 @@ function FormInputField({ label, fieldName, value, handleChange, placeholder, ty
   );
 }
 
-function CustomizedSelectForFormik({ children, form, field, error }) {
-  const { name, value } = field;
+function CustomizedSelectForFormik({ children, form, field, error, placeholder, options, ...props }) {
+  const { name, value, ...other } = field;
   const { setFieldValue } = form;
 
   return (
@@ -388,8 +401,17 @@ function CustomizedSelectForFormik({ children, form, field, error }) {
       onChange={(e) => {
         setFieldValue(name, e.target.value);
       }}
+      displayEmpty
       input={<BootstrapInput error={form.errors[name]} />}
       IconComponent={() => <DownIcon className="absolute right-2 h-4 w-4 pointer-events-none" />}
+      renderValue={(selected, ...rest) => {
+        if (!selected || selected.length === 0) {
+          return <em className="text-gray-text not-italic">{placeholder}</em>;
+        }
+
+        return options?.find((op) => selected === op.value).title;
+      }}
+      defaultValue={!value && placeholder ? undefined : options && options[0]?.value}
     >
       {children}
     </Select>
@@ -403,13 +425,20 @@ function FormSelectField({
   handleChange,
   options,
   error,
+  placeholder,
 }: IFormFieldProps & { options: { title: string; value: string | number }[] }) {
   return (
     <div className="flex flex-col space-y-2">
       <label htmlFor={fieldName} className="font-bold text-gray-detail">
         {label}
       </label>
-      <Field id={fieldName} name={fieldName} component={CustomizedSelectForFormik}>
+      <Field
+        id={fieldName}
+        name={fieldName}
+        component={CustomizedSelectForFormik}
+        options={options}
+        placeholder={placeholder}
+      >
         {options.map((item) => (
           <MenuItem value={item.value} key={item.value}>
             {item.title}
