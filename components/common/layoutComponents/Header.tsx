@@ -50,7 +50,7 @@ export function Header({ back = false, title }: IHeaderProps) {
     try {
       await fetcher("/api/customer/logout");
       await mutateUserData();
-      await router.reload();
+      await router.push("/");
     } catch (err) {
       console.log(err);
     }
