@@ -150,7 +150,7 @@ export function Header({ back = false, title }: IHeaderProps) {
   }
 
   return (
-    <>
+    <div className="sticky top-0 bg-white z-50">
       <div className="max-w-7xl mx-auto px-2 sm:px-6 lg:px-8 w-full">
         <div className="relative flex items-center justify-between h-16">
           <div className="absolute inset-y-0 left-0 flex items-center">{showMenu()}</div>
@@ -176,6 +176,6 @@ export function Header({ back = false, title }: IHeaderProps) {
           <div className="pt-2 pb-3 space-y-1 text-base">{showUserPaths()}</div>
         </div>
       </Drawer>
-    </>
+    </div>
   );
 }
