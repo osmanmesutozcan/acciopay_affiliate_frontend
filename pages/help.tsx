@@ -7,8 +7,6 @@ import { useState } from "react";
 import { twMerge } from "tailwind-merge";
 
 export default function Help() {
-  const router = useRouter();
-  console.log(router);
   return (
     <Layout title="Help">
       <div className="space-y-3">
