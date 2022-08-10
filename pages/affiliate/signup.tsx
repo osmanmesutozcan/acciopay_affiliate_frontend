@@ -125,7 +125,7 @@ export default function AffiliateSignup() {
       <Formik
         initialValues={{
           full_name: userData?.data?.legal_full_name || "",
-          residential_address: userData
+          residential_address: userData?.data?.legal_address
             ? `${userData?.data?.legal_address?.block.value} ${userData?.data?.legal_address?.building.value}, ${userData?.data?.legal_address?.street.value}, ${userData?.data?.legal_address?.floor.value}, ${userData?.data?.legal_address?.unit.value}, ${userData?.data?.legal_address?.postal.value}`
             : "",
           gender: userData?.data?.gender || "",
@@ -281,6 +281,7 @@ export default function AffiliateSignup() {
                 placeholder="school@mail.com"
                 error={errors.email}
               />
+
               <FormSelectField
                 label="Institution of Study*:"
                 fieldName="institution"
@@ -291,14 +292,15 @@ export default function AffiliateSignup() {
                 placeholder="Choose"
               />
 
-              <FormSelectField
-                label="Year of Study*:"
+              <FormInputField
+                type={"number"}
+                label="Year of study*:"
                 fieldName="alum_year"
                 value={values.alum_year}
                 handleChange={handleChange}
-                options={alumYearOptions}
+                placeholder="2020"
                 error={errors.alum_year}
-                placeholder="Year 1"
+                pattern="[0-9]*"
               />
             </div>
 
@@ -369,11 +371,22 @@ interface IFormFieldProps {
   type?: string;
   error?: string;
   form?: any;
+  pattern?: string;
 }
 
-function FormInputField({ label, fieldName, value, handleChange, placeholder, type, error, form }: IFormFieldProps) {
+function FormInputField({
+  label,
+  fieldName,
+  value,
+  handleChange,
+  placeholder,
+  type,
+  error,
+  form,
+  pattern,
+}: IFormFieldProps) {
   return (
-    <div className="space-y-2">
+    <div className="space-y-2 affiliate_input">
       <label htmlFor={fieldName} className="font-bold text-gray-detail">
         {label}
       </label>
@@ -385,6 +398,7 @@ function FormInputField({ label, fieldName, value, handleChange, placeholder, ty
         type={type}
         className={twMerge(textInputClasses, error && "border-danger-text")}
         onChange={handleChange}
+        pattern={pattern}
       />
     </div>
   );

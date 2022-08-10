@@ -61,3 +61,17 @@ input[disabled] {
 .MuiFormLabel-root.Mui-focused{
   color: black;
 }
+
+.affiliate_input input[type="number"] {
+  -moz-appearance: textfield;
+}
+.affiliate_input input[type="number"]:hover,
+.affiliate_input input[type="number"]:focus {
+  -moz-appearance: number-input;
+}
+
+.affiliate_input input[type="number"]::-webkit-outer-spin-button,
+.affiliate_input input[type="number"]::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
